@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRABODHA — The Month in AI, Science & Innovation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="html2canvas-gen.js"></script>
+<script src="qrcode-gen.js"></script>
+<script>
+  (function(){
+    var t = localStorage.getItem("prabodha-theme") || "light";
+    if (t === "dark") document.documentElement.setAttribute("data-theme", "dark");
+  })();
+</script>
+<link rel="icon" type="image/png" href="image\PRABODHA - LOGObg.png">
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <button onclick="downloadAsImage()"> Download as Image</button>
+  <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()">🌙 </button>
+</div>
+
+<div class="paper" id="paper">
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="masthead-top">
+      <span id="motto">Awakening through knowledge</span>
+      <span id="dateline"></span>
+      <span id="issueline">sample</span>
+      <span id="liveDateTime">—</span>
+    </div>
+    <div class="title-row">
+  <img src="image/PRABODHA - LOGO.png" alt="Logo" class="masthead-logo">
+    <h1 class="title">PRABODHA</h1>
+     </div>
+    <div class="masthead-sub">THE MONTHLY RECORD OF TECHNOLOGY, SCIENCE &amp; INNOVATION</div>
+    <nav class="sections">
+      <a href="https://sites.google.com/view/tanmaysaha/blog" class="editors-link">Editors Column</a>
+      <a href="archive.html" class="archive-link">Archive</a>
+      <a href="index.html" class="current-link">Current Issue</a>
+      <a href="about.html" class="about-link">About</a>
+      <a href="https://mr-banti.github.io/prabodha-online/" class="newsroom-link">NEWSROOM</a>
+      <a href="https://forms.gle/8tFfdZ5xhYNx6UPv8" class="contact-link">CONTACT US</a>
+    </nav>
+  </header>
+
+
+  <!-- TOP HIGHLIGHTS STRIP -->
+  <div class="section-heading">HEADLINES</div>
+  <section class="highlights" id="highlights">
+    <!-- filled by JS from data.js -->
+  </section>
+
+  <!-- MAIN GRID -->
+  <div class="front-grid">
+
+    <!-- LEAD STORY + DEMO TAB (grouped so they stack with no gap) -->
+    <div class="section-heading">COVER STORY</div>
+    <div class="col1-block">
+      <article class="lead-story" id="leadStory">
+        <!-- filled by JS -->
+      </article>
+      <div class="demo-tab" id="demoTab"></div>
+    </div>
+
+    <!-- SIDEBAR: IN BRIEF + MARKET WATCH -->
+    <aside class="rail">
+      <div class="rail-block" id="inBrief">
+        <h3 class="rail-head rail-section-label">SHORT STORY</h3>
+        <div class="rail-items"></div>
+      </div>
+
+      <div class="rail-block startup" id="startupSpotlight"></div>
+
+      <div class="rail-block market">
+        <h3 class="rail-head">Market Watch</h3>
+        <table class="market-table" id="marketTable"></table>
+        <div class="market-note" id="marketNote"></div>
+      </div>
+
+      
+    </aside>
+
+
+    <!-- THREE COLUMN SECONDARY STORIES -->
+    <div class="section-heading">FUNDAMENTAL SCIENCE & MATHEMATICS</div>
+    <section class="secondary-grid" id="secondaryGrid"></section>
+
+    <!-- FEATURED STORIES + INFOGRAPHIC/QUOTE -->
+    <div class="section-heading">FEATURED STORIES</div>
+    <section class="feature-row">
+      <article class="featured-story" id="featuredStory"></article>
+      <article class="featured-story featured-story-2" id="featuredStory2"></article>
+      <div class="quote-info-col">
+        <div class="infographic-block" id="infographicBlock"></div>
+      </div>
+    </section>
+
+    <!-- BOTTOM STRIP: three small features -->
+    <div class="section-heading">ANCHOR STORIES</div>
+    <section class="bottom-strip" id="bottomStrip"></section>
+
+  </div>
+
+  <footer class="paper-footer">
+    <span id="followLine">© <span id="copyYear"></span> PRABODHA. All Rights Reserved.</span>
+    <div class="foot-middle">
+      <span id="footExtra"></span>
+    </div>
+    <div class="foot-right">
+      <span class="foot-links" id="footLinks"></span>
+      <span class="foot-tag" id="footTag">NEXT GENERATION NEWSPAPER FOR A SMARTER TOMORROW</span>
+      <span class="foot-qr" id="footQr" title="Scan to open this issue"></span>
+    </div>
+  </footer>
+</div>
+
+<!-- ARTICLE OVERLAY (opens when a page/story is clicked) -->
+<div class="overlay" id="overlay">
+  <div class="overlay-inner">
+    <button class="close-btn" id="closeOverlay" aria-label="Close article">&times;</button>
+    <div class="overlay-content" id="overlayContent"></div>
+  </div>
+</div>
+
+<script src="archive-data.js"></script>
+<script src="script.js"></script>
+<script>
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const requested = params.get("edition");
+
+  function loadEdition(path) {
+    const s = document.createElement("script");
+    s.src = path;
+    s.onload = () => { window.renderIssue(); renderQr(path); };
+    s.onerror = () => {
+      document.body.innerHTML =
+        '<div class="paper" style="display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;max-width:none;border-radius:0;">' +
+        '<p style="padding:60px;font-family:monospace;text-align:center;"> NOTICE - This issue is not published yet or may be withdrawn by the publisher. Stay Updated! Meanwhile read other issues from the <a href="archive.html">archive</a> or read  <a href="index.html">current issue</a>.</p>' +
+        '</div>';
+    };
+    document.head.appendChild(s);
+  }
+
+  if (requested) {
+    loadEdition(requested);
+  } else {
+    const list = window.ARCHIVE || [];
+    if (list.length && list[0].data) {
+      loadEdition(list[0].data); // newest issue = first entry in archive-data.js
+    } else {
+      document.body.innerHTML =
+        '<div class="paper" style="display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;max-width:none;border-radius:0;">' +
+        '<p style="padding:60px;font-family:monospace;text-align:center;">  NOTICE - The website is under maintainence. Stay Updated! Read the <a href="https://sites.google.com/view/tanmaysaha/blog">Editorial Column</a>.</p>' +
+        '</div>';
+    }
+  }
+})();
+
+function renderQr(editionPath) {
+  const el = document.getElementById("footQr");
+  if (!el) return;
+  const url = new URL(window.location.href.split("?")[0]);
+  url.searchParams.set("edition", editionPath);
+  const link = url.toString();
+  const qr = qrcode(0, "M"); // type 0 = auto size, M = ~15% error correction
+  qr.addData(link);
+  qr.make();
+  el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 1 });
+  el.title = link;
+}
+
+function toggleTheme() {
+  const root = document.documentElement;
+  const isDark = root.getAttribute("data-theme") === "dark";
+  if (isDark) {
+    root.removeAttribute("data-theme");
+    localStorage.setItem("prabodha-theme", "light");
+  } else {
+    root.setAttribute("data-theme", "dark");
+    localStorage.setItem("prabodha-theme", "dark");
+  }
+  updateThemeBtn();
+}
+function updateThemeBtn() {
+  const btn = document.getElementById("themeToggle");
+  if (!btn) return;
+  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+  btn.textContent = isDark ? "☀️ " : "🌙 ";
+}
+document.addEventListener("DOMContentLoaded", updateThemeBtn);
+
+function downloadAsImage() {
+  const paper = document.getElementById("paper");
+  html2canvas(paper, { scale: 2, backgroundColor: "#f4e3ce", useCORS: true }).then(canvas => {
+    const link = document.createElement("a");
+    const dateEl = document.getElementById("dateline");
+    const dateText = (dateEl && dateEl.textContent.trim()) ? dateEl.textContent.trim().replace(/[,\s]+/g, "-") : "issue";
+    link.download = "PRABODHA - " + dateText + ".png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  }).catch(err => {
+    alert("Could not generate image: " + err);
+  });
+}
+</script>
+
+<script>
+  // ---- Live local date, 24h time, and timezone in the masthead ----
+  function ordinalSuffix(n) {
+    const v = n % 100;
+    if (v >= 11 && v <= 13) return "th";
+    switch (n % 10) {
+      case 1: return "st";
+      case 2: return "nd";
+      case 3: return "rd";
+      default: return "th";
+    }
+  }
+  function updateLiveDateTime() {
+    const el = document.getElementById("liveDateTime");
+    if (!el) return;
+    const now = new Date();
+    const day = now.getDate();
+    const month = now.toLocaleString("en-US", { month: "long" });
+    const year = now.getFullYear();
+    const hh = String(now.getHours()).padStart(2, "0");
+    const mm = String(now.getMinutes()).padStart(2, "0");
+    const ss = String(now.getSeconds()).padStart(2, "0");
+    let tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    try {
+      const tzShort = new Intl.DateTimeFormat("en-US", { timeZoneName: "short" })
+        .formatToParts(now).find(p => p.type === "timeZoneName");
+      if (tzShort) tz = `${tz} (${tzShort.value})`;
+    } catch (e) {}
+    el.textContent = `${day}${ordinalSuffix(day)} ${month} ${year} · ${hh}:${mm}:${ss} · ${tz}`;
+  }
+  updateLiveDateTime();
+  setInterval(updateLiveDateTime, 1000);
+  document.getElementById("copyYear").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
