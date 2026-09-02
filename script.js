@@ -101,6 +101,7 @@
       ${story.caption ? `<p class="article-caption">${processCites(story.caption)}</p>` : ""}
       <div class="article-body">${story.body.map(p => `<p>${processCites(p)}</p>`).join("")}</div>
       ${renderSources(story.sources)}
+      ${story.id ? `<div class="article-id-display">ID:<code>${story.id}</code></div>` : ""}
     `;
     overlay.classList.add("open");
     overlay.scrollTop = 0;
@@ -131,8 +132,16 @@
   </div>`).join("");
     $$(".highlight-item", hEl).forEach((el, i) => {
       const h = D.highlights[i];
-      const story = { headline: h.title, tag: h.tag, page: h.page, image: h.image, caption: h.caption, sources: h.sources,
-        body: (h.body && h.body.length) ? h.body : [`Full coverage of "${h.title}" continues on page ${h.page} of this edition.`] };
+      const story = { 
+        headline: h.title, 
+        tag: h.tag, 
+        page: h.page, 
+        image: h.image, 
+        caption: h.caption, 
+        sources: h.sources,
+        id: h.id,
+        body: (h.body && h.body.length) ? h.body : [`Full coverage of "${h.title}" continues on page ${h.page} of this edition.`] 
+      };
       el.addEventListener("click", () => openArticle(story));
       el.addEventListener("keydown", e => { if (e.key === "Enter") openArticle(story); });
     });
@@ -204,8 +213,16 @@
   </div>`).join("");
     $$(".brief-item", briefWrap).forEach((el, i) => {
       const b = D.inBrief[i];
-      const story = { headline: b.headline, page: b.page, image :b.image, caption: b.caption, tag:b.tag, sources: b.sources,
-        body: (b.fullBody && b.fullBody.length) ? b.fullBody : [processCites(b.body)] };
+      const story = { 
+        headline: b.headline, 
+        page: b.page, 
+        image: b.image, 
+        caption: b.caption, 
+        tag: b.tag, 
+        sources: b.sources,
+        id: b.id,
+        body: (b.fullBody && b.fullBody.length) ? b.fullBody : [processCites(b.body)] 
+      };
       el.addEventListener("click", () => openArticle(story));
       el.addEventListener("keydown", e => { if (e.key === "Enter") openArticle(story); });
     });
