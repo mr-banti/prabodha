@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archive — PRABODHA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>.id-search-results{min-height:0;}</style>
+<script src="qrcode-gen.js"></script>
+<script>
+  (function(){
+    var t = localStorage.getItem("prabodha-theme") || "light";
+    if (t === "dark") document.documentElement.setAttribute("data-theme", "dark");
+  })();
+</script>
+<link rel="icon" type="image/png" href="image\PRABODHA - LOGObg.png">
+</head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0J1DPM3Y95"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0J1DPM3Y95');
+</script>
+
+<body>
+
+<div class="page-toolbar no-print">
+  <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()">🌙 </button>
+</div>
+
+<div class="paper">
+  <header class="masthead">
+    <div class="masthead-top masthead-top-center">
+      <span id="motto">Awakening through knowledge</span>
+      <span>PRABODHA</span>
+      <span id="liveDateTime">—</span>
+    </div>
+    <div class="title-row">
+  <img src="image/PRABODHA - LOGO.png" alt="Logo" class="masthead-logo">
+  <h1 class="title">ARCHIVE</h1>
+</div>
+    <div class="masthead-sub"></div>
+    <nav class="sections">
+      <a href="https://sites.google.com/view/tanmaysaha/blog" class="editors-link">Editors Column</a>
+      <a href="index.html" class="current-link">Current Issue</a>
+      <a href="about.html" class="about-link">About</a>
+      <a href="https://mr-banti.github.io/prabodha-online/" class="newsroom-link">NEWSROOM</a>
+      <a href="https://forms.gle/8tFfdZ5xhYNx6UPv8" class="contact-link">CONTACT US</a>
+    </nav>
+  </header>
+
+  <section class="archive-stats" id="archiveStats"></section>
+
+  <div class="archive-search-wrap">
+    <svg class="archive-search-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"></circle>
+      <line x1="16.2" y1="16.2" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+    </svg>
+    <input type="text" id="archiveSearch" class="archive-search" placeholder="Search by any word in the news... e.g. &quot;Science&quot;">
+    <span class="archive-search-status" id="archiveSearchStatus"></span>
+  </div>
+
+  <div class="archive-search-wrap">
+    <svg class="archive-search-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"></circle>
+      <line x1="16.2" y1="16.2" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+    </svg>
+    <div class="id-input-group">
+  <svg class="archive-search-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"></circle>
+    <line x1="16.2" y1="16.2" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
+  </svg>
+  <input type="text" id="idSearch" class="archive-search" placeholder="Search by News ID... e.g. &quot;h-figure02-bmw&quot;">
+  <span class="archive-search-status" id="idSearchStatus"></span>
+</div>
+    <div class="pub-search-group">
+      <select id="pubSearchMode" class="pub-search-select">
+        <option value="monthyear">Month / Year</option>
+        <option value="volissue">Volume / Issue</option>
+      </select>
+      <select id="pubSearchValue" class="pub-search-value">
+        <option value="">All</option>
+      </select>
+    </div>
+  </div>
+  <section id="idSearchResults" class="archive-list id-search-results"></section>
+
+  <div id="allIssuesSection">
+    <div class="section-heading">ALL PAST ISSUES</div>
+    <section id="archiveList" class="archive-list"></section>
+  </div>
+
+  <footer class="paper-footer">
+    <span>© <span id="copyYear"></span> PRABODHA. All Rights Reserved.</span>
+    <div class="foot-right">
+      <span class="foot-tag">NEXT GENERATION NEWSPAPER FOR A SMARTER TOMORROW</span>
+      <span class="foot-qr" id="footQr" title="Scan to open Archive"></span>
+    </div>
+  </footer>
+</div>
+
+
+<script src="archive-data.js"></script>
+<script>
+  // ---- Live local date, 24h time, and timezone in the masthead ----
+  function ordinalSuffix(n) {
+    const v = n % 100;
+    if (v >= 11 && v <= 13) return "th";
+    switch (n % 10) {
+      case 1: return "st";
+      case 2: return "nd";
+      case 3: return "rd";
+      default: return "th";
+    }
+  }
+  function updateLiveDateTime() {
+    const el = document.getElementById("liveDateTime");
+    if (!el) return;
+    const now = new Date();
+    const day = now.getDate();
+    const month = now.toLocaleString("en-US", { month: "long" });
+    const year = now.getFullYear();
+    const hh = String(now.getHours()).padStart(2, "0");
+    const mm = String(now.getMinutes()).padStart(2, "0");
+    const ss = String(now.getSeconds()).padStart(2, "0");
+    let tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    try {
+      const tzShort = new Intl.DateTimeFormat("en-US", { timeZoneName: "short" })
+        .formatToParts(now).find(p => p.type === "timeZoneName");
+      if (tzShort) tz = `${tz} (${tzShort.value})`;
+    } catch (e) {}
+    el.textContent = `${day}${ordinalSuffix(day)} ${month} ${year} · ${hh}:${mm}:${ss} · ${tz}`;
+  }
+  updateLiveDateTime();
+  setInterval(updateLiveDateTime, 1000);
+  document.getElementById("copyYear").textContent = new Date().getFullYear();
+
+  function renderPageQr() {
+    const el = document.getElementById("footQr");
+    if (!el || typeof qrcode !== "function") return;
+    const link = window.location.href.split("?")[0].split("#")[0];
+    const qr = qrcode(0, "M");
+    qr.addData(link);
+    qr.make();
+    el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 1 });
+    el.title = link;
+  }
+  renderPageQr();
+
+  function toggleTheme() {
+    const root = document.documentElement;
+    const isDark = root.getAttribute("data-theme") === "dark";
+    if (isDark) { root.removeAttribute("data-theme"); localStorage.setItem("prabodha-theme", "light"); }
+    else { root.setAttribute("data-theme", "dark"); localStorage.setItem("prabodha-theme", "dark"); }
+    updateThemeBtn();
+  }
+  function updateThemeBtn() {
+    const btn = document.getElementById("themeToggle");
+    if (!btn) return;
+    btn.textContent = document.documentElement.getAttribute("data-theme") === "dark" ? "☀️ " : "🌙 ";
+  }
+  updateThemeBtn();
+</script>
+<script>
+  const list = document.getElementById("archiveList");
+  const stats = document.getElementById("archiveStats");
+  const searchInput = document.getElementById("archiveSearch");
+  const issues = window.ARCHIVE || [];
+
+  if (stats) {
+    const count = issues.length;
+    const latest = count ? issues[0].date : "—";
+    const first = count ? issues[issues.length - 1].date : "—";
+    stats.innerHTML = `
+      <div class="stat-block"><div class="stat-num">${count}</div><div class="stat-label">ISSUES PUBLISHED</div></div>
+      <div class="stat-block"><div class="stat-num">${latest}</div><div class="stat-label">LATEST ISSUE</div></div>
+      <div class="stat-block"><div class="stat-num">${first}</div><div class="stat-label">FIRST PUBLISHED</div></div>
+    `;
+  }
+
+  // Normalize text for flexible matching: lowercase, collapse punctuation/spaces
+  function normalize(s) {
+    return (s || "").toLowerCase().replace(/[.,·•|_/\\-]/g, " ").replace(/\s+/g, " ").trim();
+  }
+
+  // Build a searchable string per issue from its archive-list metadata:
+  // date, issue label, headline, plus normalized "vol"/"issue" tokens.
+  function metaText(it) {
+    const raw = `${it.date} ${it.issue} ${it.headline}`;
+    let norm = normalize(raw);
+    norm = norm.replace(/vol\.?\s*/g, "vol ").replace(/issue\s*/g, "issue ");
+    return norm;
+  }
+
+  // ---- Levenshtein edit distance (for typo-tolerant word matching) ----
+  function editDistance(a, b) {
+    const m = a.length, n = b.length;
+    if (!m) return n;
+    if (!n) return m;
+    const dp = new Array(n + 1);
+    for (let j = 0; j <= n; j++) dp[j] = j;
+    for (let i = 1; i <= m; i++) {
+      let prev = dp[0];
+      dp[0] = i;
+      for (let j = 1; j <= n; j++) {
+        const tmp = dp[j];
+        dp[j] = a[i - 1] === b[j - 1] ? prev : 1 + Math.min(prev, dp[j], dp[j - 1]);
+        prev = tmp;
+      }
+    }
+    return dp[n];
+  }
+
+  // A search term "fuzzy-matches" a text word if it's a substring,
+  // or close enough by edit distance (tolerant of small typos).
+  function fuzzyIncludes(text, term) {
+    if (text.includes(term)) return true;
+    if (term.length < 4) return false; // avoid false positives on short words
+    const words = text.split(" ");
+    const maxDist = term.length <= 6 ? 1 : 2;
+    return words.some(w => w.length >= 3 && editDistance(w, term) <= maxDist);
+  }
+
+  // ---- Pull {id, title} pairs for every article in an issue's data file ----
+  function extractIds(D, it) {
+    if (!D) return [];
+    const out = [];
+    const grab = (o, titleKeys) => {
+      if (!o || !o.id) return;
+      const title = titleKeys.map(k => o[k]).find(v => typeof v === "string" && v) || "(untitled)";
+      out.push({ id: o.id, title, issue: it });
+    };
+    grab(D.lead, ["headline", "kicker"]);
+    (D.highlights || []).forEach(h => grab(h, ["title", "tag"]));
+    (D.inBrief || []).forEach(b => grab(b, ["headline", "tag"]));
+    (D.secondary || []).forEach(s => grab(s, ["headline", "tag"]));
+    grab(D.featured, ["headline", "tag"]);
+    grab(D.featured2, ["headline", "tag"]);
+    (D.bottomStrip || []).forEach(b => grab(b, ["headline", "tag"]));
+    return out;
+  }
+
+  // ---- Pull full article text out of each issue's own data file ----
+  // (headlines, deks/summaries, and body paragraphs across all sections)
+  function flattenIssueText(D) {
+    if (!D) return "";
+    const parts = [];
+    const grab = (o, keys) => { if (o) keys.forEach(k => { if (typeof o[k] === "string") parts.push(o[k]); if (Array.isArray(o[k])) parts.push(o[k].join(" ")); }); };
+    grab(D, ["motto"]);
+    grab(D.lead, ["kicker", "headline", "deck", "dek", "body", "caption"]);
+    (D.highlights || []).forEach(h => grab(h, ["tag", "title", "caption", "body"]));
+    (D.inBrief || []).forEach(b => grab(b, ["tag", "headline", "body", "fullBody", "caption"]));
+    (D.secondary || []).forEach(s => grab(s, ["tag", "headline", "summary", "body", "caption"]));
+    grab(D.featured, ["tag", "headline", "dek", "summary", "body"]);
+    grab(D.featured2, ["tag", "headline", "dek", "summary", "body"]);
+    (D.bottomStrip || []).forEach(b => grab(b, ["tag", "headline", "summary", "body"]));
+    if (D.market) parts.push(D.market.note || "");
+    return normalize(parts.join(" "));
+  }
+
+  // Load an issue's data file in isolation and capture window.ISSUE
+  function loadIssueContent(path) {
+    return new Promise(resolve => {
+      const s = document.createElement("script");
+      s.src = path;
+      s.onload = () => {
+        const data = window.ISSUE;
+        delete window.ISSUE;
+        s.remove();
+        resolve(data);
+      };
+      s.onerror = () => { s.remove(); resolve(null); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function renderList(filtered) {
+    if (!issues.length) {
+      list.innerHTML = `<p class="archive-empty">No past issues yet — this month's edition will appear here once it's published.</p>`;
+      return;
+    }
+    if (!filtered.length) {
+      list.innerHTML = `<p class="archive-empty">No issues match your search. Try a word from the news.</p>`;
+      return;
+    }
+    list.innerHTML = filtered.map(it => `
+      <a class="archive-row" href="index.html?edition=${encodeURIComponent(it.data)}">
+        <div class="archive-date">${it.date}<br><span class="archive-issue">${it.issue}</span></div>
+        <div class="archive-headline">${it.headline}</div>
+        <div class="archive-arrow">READ →</div>
+      </a>
+    `).join("");
+  }
+
+  renderList(issues);
+
+  // Build a full-text index (meta + article content) for every issue, in the background.
+  const contentIndex = new Map(); // it.data -> normalized full text
+  const idIndex = new Map(); // article id -> { id, title, issue }
+  const statusEl = document.getElementById("archiveSearchStatus");
+  const idStatusEl = document.getElementById("idSearchStatus");
+  (async () => {
+    for (const it of issues) {
+      let text = metaText(it);
+      const data = await loadIssueContent(it.data);
+      if (data) {
+        text += " " + flattenIssueText(data);
+        extractIds(data, it).forEach(entry => idIndex.set(entry.id, entry));
+      }
+      contentIndex.set(it.data, text);
+    }
+    if (statusEl) statusEl.textContent = "";
+    if (idStatusEl) idStatusEl.textContent = "";
+    if (searchInput && searchInput.value.trim()) runSearch(searchInput.value);
+    if (idSearchInput && idSearchInput.value.trim()) runIdSearch(idSearchInput.value);
+  })();
+  if (statusEl) statusEl.textContent = "Indexing articles…";
+  if (idStatusEl) idStatusEl.textContent = "Indexing articles…";
+
+  // ---- Search-by-News-ID ----
+  const idSearchInput = document.getElementById("idSearch");
+  const idResultsEl = document.getElementById("idSearchResults");
+
+  function renderIdResults(rawQuery, matches) {
+    const allIssuesEl = document.getElementById("allIssuesSection");
+    if (!rawQuery.trim()) {
+      idResultsEl.innerHTML = "";
+      if (allIssuesEl) allIssuesEl.style.display = "";
+      return;
+    }
+    if (allIssuesEl) allIssuesEl.style.display = "none";
+    if (!matches.length) {
+      idResultsEl.innerHTML = `<p class="archive-empty">No article found with that News ID.</p>`;
+      return;
+    }
+    idResultsEl.innerHTML = matches.map(m => `
+      <a class="archive-row" href="index.html?edition=${encodeURIComponent(m.issue.data)}&id=${encodeURIComponent(m.id)}#${encodeURIComponent(m.id)}">
+        <div class="archive-date">${m.issue.date}<br><span class="archive-issue">${m.issue.issue}</span></div>
+        <div class="archive-headline">${m.title} <code>[${m.id}]</code></div>
+        <div class="archive-arrow">READ →</div>
+      </a>
+    `).join("");
+  }
+
+  function runIdSearch(rawQuery) {
+    const q = normalize(rawQuery).replace(/\s+/g, "-");
+    if (!q) { renderIdResults(rawQuery, []); return; }
+    const matches = [];
+    idIndex.forEach(entry => {
+      if (entry.id.toLowerCase().includes(q) || fuzzyIncludes(entry.id.toLowerCase(), q)) {
+        matches.push(entry);
+      }
+    });
+    renderIdResults(rawQuery, matches);
+  }
+
+  if (idSearchInput) {
+    let idDebounceTimer;
+    idSearchInput.addEventListener("input", () => {
+      clearTimeout(idDebounceTimer);
+      idDebounceTimer = setTimeout(() => runIdSearch(idSearchInput.value), 120);
+    });
+  }
+
+  // ---- Search by Month/Year or Volume/Issue (filters the main list directly) ----
+  const pubSearchMode = document.getElementById("pubSearchMode");
+  const pubSearchValue = document.getElementById("pubSearchValue");
+
+  function populatePubValues() {
+    const values = [...new Set(issues.map(it => pubSearchMode.value === "monthyear" ? it.date : it.issue))];
+    pubSearchValue.innerHTML = `<option value="">All</option>` +
+      values.map(v => `<option value="${v}">${v}</option>`).join("");
+  }
+  populatePubValues();
+
+  function runPubSearch() {
+    const v = pubSearchValue.value;
+    if (!v) { renderList(issues); return; }
+    const field = pubSearchMode.value === "monthyear" ? "date" : "issue";
+    renderList(issues.filter(it => it[field] === v));
+  }
+
+  if (pubSearchMode) {
+    pubSearchMode.addEventListener("change", () => {
+      populatePubValues();
+      runPubSearch();
+    });
+  }
+  if (pubSearchValue) {
+    pubSearchValue.addEventListener("change", runPubSearch);
+  }
+
+  function runSearch(rawQuery) {
+    const q = normalize(rawQuery);
+    if (!q) { renderList(issues); return; }
+    const terms = q.split(" ").filter(Boolean);
+    const filtered = issues.filter(it => {
+      const text = contentIndex.get(it.data) || metaText(it);
+      return terms.every(term => fuzzyIncludes(text, term));
+    });
+    renderList(filtered);
+  }
+
+  if (searchInput) {
+    let debounceTimer;
+    searchInput.addEventListener("input", () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => runSearch(searchInput.value), 120);
+    });
+  }
+</script>
+</body>
+</html>
